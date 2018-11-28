@@ -1,0 +1,42 @@
+## PUSH NOTIFS - HOW TO ##
+
+/!\ URIs relative to 	
+
+ressource -> Users.messages:
+
+
+fonction watch():  	
+POST  /:userId/watch 	Set up or update a push notification watch on the given user mailbox. 
+
+watch response: 
+
+{
+  historyId: 1234567890
+  expiration: 1431990098200 	 
+}
+
+Webhook notification send to our server:
+
+POST https://yourserver.example.com/yourUrl
+Content-type: application/json
+
+{
+  message:
+  {
+    // This is the actual notification data, as base64url-encoded JSON.
+    data: "eyJlbWFpbEFkZHJlc3MiOiAidXNlckBleGFtcGxlLmNvbSIsICJoaXN0b3J5SWQiOiAiMTIzNDU2Nzg5MCJ9",
+
+    // This is a Cloud Pub/Sub message id, unrelated to Gmail messages.
+    message_id: "1234567890",
+  }
+
+  subscription: "projects/myproject/subscriptions/mysubscription"
+}
+
+
+
+We use the message_id retrieved with the watch to get the message
+
+GET  /:userId/messages/:id 	Gets the specified message. 
+
+GET  /userId/labels/id 	Gets the specified label. 
