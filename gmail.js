@@ -162,9 +162,14 @@ function getEmailById(auth, mail_id){
 }
 
 function listenToMailbox(auth, user_id){
-    gmail.users.watch({auth: auth, userId: user_id, topicName: "test"}, function(err, response){
+    /*request = {
+        'labelIds': ['INBOX'],
+        'topicName': 'projects/project-1016669195686/topics/mytopic'
+      }*/
+      
+    gmail.users.watch({auth: auth, userId: user_id, topicName: 'projects/project-1016669195686/topics/mytopic'}, function(err, response){
         if (err) {
-            console.log('The API returned an error: ' + err);
+            console.log('The "watch()" returned an error: ' + err);
             return;
         }
         console.log("===== Watch response =====")
