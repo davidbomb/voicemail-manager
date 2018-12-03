@@ -162,12 +162,12 @@ function getEmailById(auth, mail_id){
 }
 
 function listenToMailbox(auth, user_id){
-    /*request = {
+    request = {
         'labelIds': ['INBOX'],
-        'topicName': 'projects/project-1016669195686/topics/mytopic'
-      }*/
+        'topicName': 'projects/how-to-push/topics/mytopic'
+      }
       
-    gmail.users.watch({auth: auth, userId: user_id, topicName: 'projects/project-1016669195686/topics/mytopic'}, function(err, response){
+    gmail.users.watch({auth: auth, userId: user_id, resource:{labelIds: ['INBOX'], topicName: 'projects/how-to-push/topics/mytopic'}}, function(err, response){
         if (err) {
             console.log('The "watch()" returned an error: ' + err);
             return;
