@@ -7,7 +7,8 @@ var {google} = require('googleapis');
 var SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
  
 // Change token directory to your system preference
-var TOKEN_DIR = ('/home/david/Documents/3a/voice_manager_project/credentials/');
+//var TOKEN_DIR = ('/home/david/Documents/3a/voice_manager_project/credentials/');
+var TOKEN_DIR = ('C:\\Users\\Reda\\Desktop\\IT363\\credentials');
 var TOKEN_PATH = TOKEN_DIR + 'gmail-nodejs.json';
  
 var gmail = google.gmail('v1');
@@ -175,5 +176,6 @@ function listenToMailbox(auth, user_id){
         console.log("===== Watch response =====")
         console.log(response)
     })
+    
 }
 
