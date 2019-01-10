@@ -14,6 +14,7 @@ const db = admin.database();
   response.send("Hello from Firebase!");
  });
 
+
 //  export const getData = functions.database.ref('/user/user01/rsr')
 //      response.send(FirebaseDatabase.getInstance().getReference("produit");)
 //  })
@@ -40,6 +41,7 @@ exports.addMessage = functions.https.onRequest((req, res) => {
     return db.ref('/users/user01/rsr/email').push(
       {
         msgId: req.query.msgId,
+        sender: req.query.sender,
         payload: req.query.payload,
         refcnt: req.query.refcnt    
     }).then((snapshot) => {
@@ -78,7 +80,7 @@ exports.increaseNotifCounter = functions.https.onRequest((req, res) => {
         max: snapshot.val().max
     })
     .then(() => {
-      res.status(200).send("Counter successfully increased ! " + snapshot.val().cnt + 1);
+      res.status(200).send("Counter successfully increased !");
     })
     .catch( error => {
       console.log(error);
@@ -100,11 +102,94 @@ exports.increaseNotifCounter = functions.https.onRequest((req, res) => {
 //   })
 // }
 
+
+
+exports.getAllEmails = functions.https.onRequest((req, res) => {
+  var Emails = []
+  db.ref('/users/user01/rsr/email/').once("value")
+  .then(function(snapshot){
+    console.log(snapshot.val())
+    for(let i in snapshot.val()){
+      Emails.push(snapshot.val()[i])
+    }
+    // snapshot.val().forEach((element) => {
+    //     Emails.push(element)
+    // })
+    res.status(200).send(Emails)
+     
+  })
+  .catch( error => {
+    console.log(error);
+    return error
+  })
+})
+
+
+
+
+
 // exports.increaseNotifCounter = functions.https.onRequest((req, res) => {
 //   readNotifCounter()
 //   .then( counterSnapshot => {
 //     counterSnapshot.val().cnt 
 
+
+exports.getEmailsBySender = functions.https.onRequest((req, res) => {
+  const sender = req.query.sender;
+  var emails = []
+  db.ref('/users/user01/rsr/email/').once("value")
+  .then(function(snapshot){
+    for(let i in snapshot.val()){
+      if(snapshot.val()[i].sender === sender){
+        emails.push(snapshot.val()[i])
+      }
+    }
+    res.status(200).send(emails) 
+  })
+  .catch( error => {
+    console.log(error);
+    return error
+  })
+})
+
+// Non exported function getAllEmails
+
+function getAllEmails(){
+  return new Promise(function(resolve, reject) {
+    var emails = []
+    db.ref('/users/user01/rsr/email/').once("value")
+    .then(function(snapshot){
+      for(let i in snapshot.val()){
+        emails.push(snapshot.val()[i])  
+      }
+      resolve(emails) 
+    })
+    .catch( error => {
+      console.log(error);
+      reject(error)
+    })
+  })
+}
+
+
+
+exports.searchBySubject = functions.https.onRequest((req, res) => {
+  const subject = req.query.subject;
+  var emailsBySubject = []
+  getAllEmails().then( emails => {
+    for(let i in emails){
+      if(emails[i].subject.includes(subject)){
+        emailsBySubject.push(emails[i]);
+      } 
+    }
+    res.status(200).send(emailsBySubject);    
+  })
+  .catch( error => {
+    console.log(error);
+    res.status(400).send(error)
+  })
+})
+  
 //     var newCounter = 4;
 //     db.ref('/users/user01/ctx/email/cntNotif/')
 //     .set({
